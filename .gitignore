@@ -1,0 +1,3 @@
+# Don't include C++ binaries
+cpp/bin/
+
