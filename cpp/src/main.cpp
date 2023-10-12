@@ -13,10 +13,8 @@ int main(int argc, const char **argv) {
 	}
 
 	UserArguments userArgs(argv);
-	Device testDevice(&userArgs);
-
-	std::cout << "Device name is " << testDevice.deviceName << " and port is " << testDevice.devicePort << std::endl;
-	std::cout << "Device model is " << testDevice.deviceModel << " and serial number is " << testDevice.deviceSerial << std::endl;
-
+	UnicastCommunicator unicomm("127.0.0.1", userArgs.devicePort);
+	MulticastCommunicator multicomm("224.3.11.15", userArgs.devicePort);
+	Device testDevice(userArgs.deviceName, &unicomm, &multicomm);
 	return testDevice.powerOn();
 }

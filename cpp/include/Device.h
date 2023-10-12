@@ -12,14 +12,16 @@ enum deviceState {
 };
 
 class Device {
-	public:
+	private:
 		std::string deviceName;
 		std::string deviceModel;
-		int devicePort;
 		int deviceSerial;
 		enum deviceState state;
+		UnicastCommunicator *unicomm;
+		MulticastCommunicator *multicomm;
 
-		Device(UserArguments *args);
+	public:
+		Device(std::string name, UnicastCommunicator *ucomm, MulticastCommunicator *mcomm);
 		int powerOn(void);
 };
 

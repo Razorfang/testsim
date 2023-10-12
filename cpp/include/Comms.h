@@ -15,9 +15,9 @@ struct CommData {
 
 class Communicator {
 
-	public:
+	protected:
 		struct CommData data;
-
+	public:
 		virtual std::string getMessage(void) = 0;
 		virtual void sendMessage(std::string msg) = 0;
 };
