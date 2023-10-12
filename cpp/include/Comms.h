@@ -7,6 +7,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "Messages.h"
+
 struct CommData {
 	int sockfd;
 	struct sockaddr_in receiveAddr;
@@ -18,8 +20,8 @@ class Communicator {
 	protected:
 		struct CommData data;
 	public:
-		virtual std::string getMessage(void) = 0;
-		virtual void sendMessage(std::string msg) = 0;
+		virtual Message *getMessage(void) = 0;
+		virtual void sendMessage(Message &msg) = 0;
 };
 
 class UnicastCommunicator : public Communicator {
@@ -27,8 +29,8 @@ class UnicastCommunicator : public Communicator {
 		UnicastCommunicator(std::string serverAddr, int port);
 		~UnicastCommunicator();
 
-		std::string getMessage(void) override;
-		void sendMessage(std::string msg) override;
+		Message *getMessage(void) override;
+		void sendMessage(Message &msg) override;
 };
 
 class MulticastCommunicator : public Communicator {
@@ -36,8 +38,8 @@ class MulticastCommunicator : public Communicator {
 		MulticastCommunicator(std::string multicastGroup, int port);
 		~MulticastCommunicator();
 
-		std::string getMessage(void) override;
-		void sendMessage(std::string msg) override;
+		Message *getMessage(void) override;
+		void sendMessage(Message &msg) override;
 };
 
 #endif //__COMMS_H_

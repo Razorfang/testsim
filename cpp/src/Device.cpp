@@ -2,7 +2,7 @@
 Device::Device(std::string name, UnicastCommunicator *ucomm, MulticastCommunicator *mcomm) {
 	deviceName = name;
 	deviceModel = "TECHNO-TROUSERS";
-	deviceSerial = 100;
+	deviceSerial = "W4114C3";
 	state = UNDISCOVERED;
 
 	unicomm = ucomm;
@@ -11,15 +11,13 @@ Device::Device(std::string name, UnicastCommunicator *ucomm, MulticastCommunicat
 
 #include <iostream>
 
+
 int Device::powerOn() {
 	bool stayOn = true;
-	std::string msg = "ID;MODEL=" + deviceModel + ";SERIAL=" + std::to_string(deviceSerial);
-	
-	unicomm->sendMessage(msg);
-	std::cout << unicomm->getMessage() << std::endl;
 
-	multicomm->sendMessage(msg);
-	std::cout << multicomm->getMessage() << std::endl;
+	DiscoveryReplyMessage discoveryReply(deviceModel, deviceSerial);
+	multicomm->sendMessage(discoveryReply);
+	std::cout << "Received on loopback: " << multicomm->getMessage()->toString() << std::endl;
 
 	return 0;
 

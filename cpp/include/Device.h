@@ -4,6 +4,7 @@
 #include <string>
 #include "UserArguments.h"
 #include "Comms.h"
+#include "Messages.h"
 
 enum deviceState {
 	UNDISCOVERED,
@@ -15,7 +16,7 @@ class Device {
 	private:
 		std::string deviceName;
 		std::string deviceModel;
-		int deviceSerial;
+		std::string deviceSerial;
 		enum deviceState state;
 		UnicastCommunicator *unicomm;
 		MulticastCommunicator *multicomm;
