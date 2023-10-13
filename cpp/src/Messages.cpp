@@ -22,8 +22,7 @@ std::string DiscoveryRequestMessage::toString(void) {
 }
 
 bool DiscoveryRequestMessage::updateFromString(std::string s) {
-	(void)s;
-	return true;
+	return ("ID;" == s);
 }
 
 DiscoveryReplyMessage::DiscoveryReplyMessage(std::string msgModel, std::string msgSerial) {
@@ -118,8 +117,7 @@ std::string TestStopMessage::toString(void) {
 }
 
 bool TestStopMessage::updateFromString(std::string s) {
-	(void)s;
-	return true;
+	return ("TEST;CMD=STOP;" == s);
 }
 
 TestResultMessage::TestResultMessage(std::string status, std::string reason) {
@@ -163,6 +161,5 @@ std::string TestStateMessage::toString(void) {
 }
 
 bool TestStateMessage::updateFromString(std::string s) {
-	(void)s;
-	return true;
+	return ("STATUS;STATE=IDLE;" == s);
 }

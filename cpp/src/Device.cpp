@@ -16,13 +16,22 @@ int Device::powerOn() {
 	bool stayOn = true;
 
 	DiscoveryReplyMessage discoveryReply(deviceModel, deviceSerial);
+
+	DiscoveryRequestMessage discoveryRequest;
+
+	std::string reply = multicomm->getBlocking();
+	if (discoveryRequest.updateFromString(reply)) {
+		std::cout << "Discovery received: " << reply << std::endl;
+	}
+
+
 	multicomm->sendMessage(discoveryReply);
-	std::string loopbackReply = multicomm->getBlocking();
-	if (discoveryReply.updateFromString(loopbackReply)) {
-		std::cout << "Reply received: " << loopbackReply << std::endl;
+	reply = multicomm->getBlocking();
+	if (discoveryReply.updateFromString(reply)) {
+		std::cout << "Loopback reply received: " << reply << std::endl;
 	}
 	else {
-		std::cout << "Invalid reply: " << loopbackReply << std::endl;
+		std::cout << "Invalid loopback reply: " << reply << std::endl;
 	}
 
 	return 0;
