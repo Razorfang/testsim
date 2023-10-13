@@ -20,7 +20,7 @@ class Communicator {
 	protected:
 		struct CommData data;
 	public:
-		virtual Message *getMessage(void) = 0;
+		virtual std::string getBlocking(void) = 0;
 		virtual void sendMessage(Message &msg) = 0;
 };
 
@@ -29,7 +29,7 @@ class UnicastCommunicator : public Communicator {
 		UnicastCommunicator(std::string serverAddr, int port);
 		~UnicastCommunicator();
 
-		Message *getMessage(void) override;
+		std::string getBlocking(void) override;
 		void sendMessage(Message &msg) override;
 };
 
@@ -38,7 +38,7 @@ class MulticastCommunicator : public Communicator {
 		MulticastCommunicator(std::string multicastGroup, int port);
 		~MulticastCommunicator();
 
-		Message *getMessage(void) override;
+		std::string getBlocking(void) override;
 		void sendMessage(Message &msg) override;
 };
 

@@ -17,7 +17,13 @@ int Device::powerOn() {
 
 	DiscoveryReplyMessage discoveryReply(deviceModel, deviceSerial);
 	multicomm->sendMessage(discoveryReply);
-	std::cout << "Received on loopback: " << multicomm->getMessage()->toString() << std::endl;
+	std::string loopbackReply = multicomm->getBlocking();
+	if (discoveryReply.updateFromString(loopbackReply)) {
+		std::cout << "Reply received: " << loopbackReply << std::endl;
+	}
+	else {
+		std::cout << "Invalid reply: " << loopbackReply << std::endl;
+	}
 
 	return 0;
 

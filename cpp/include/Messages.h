@@ -2,17 +2,20 @@
 #define __MESSAGES_H_
 
 #include <string>
+#include <vector>
+#include <sstream>
 
 class Message {
 	public:
 		virtual std::string toString(void) = 0;
+		// Returns true if we can generate this type of message from a string and false otherwise.
+		virtual bool updateFromString(std::string s) = 0;
 };
-
-Message *stringToMessage(std::string);
 
 class DiscoveryRequestMessage : public Message {
 	public:
 		std::string toString(void) override;
+		bool updateFromString(std::string s) override;
 };
 
 class DiscoveryReplyMessage : public Message {
@@ -21,6 +24,7 @@ class DiscoveryReplyMessage : public Message {
 		std::string serial;
 		DiscoveryReplyMessage(std::string msgModel, std::string msgSerial);
 		std::string toString(void) override;
+		bool updateFromString(std::string s) override;
 };
 
 class TestStartMessage : public Message {
@@ -29,12 +33,13 @@ class TestStartMessage : public Message {
 		int rateMilliseconds;
 		TestStartMessage(int dur, int rate);
 		std::string toString(void) override;
-
+		bool updateFromString(std::string s) override;
 };
 
 class TestStopMessage : public Message {
 	public:
 		std::string toString(void) override;
+		bool updateFromString(std::string s) override;
 };
 
 class TestResultMessage : public Message {
@@ -43,6 +48,7 @@ class TestResultMessage : public Message {
 		std::string resultReason;
 		TestResultMessage(std::string status, std::string reason);
 		std::string toString(void) override;
+		bool updateFromString(std::string s) override;
 };
 
 class TestStatusMessage : public Message {
@@ -52,12 +58,14 @@ class TestStatusMessage : public Message {
 		int milliAmps;
 		TestStatusMessage(int t, int mv, int ma);
 		std::string toString(void) override;
-
+		bool updateFromString(std::string s) override;
 };
 
 class TestStateMessage: public Message {
 	public:
 		std::string toString(void) override;
+		bool updateFromString(std::string s) override;
 };
+
 
 #endif //__MESSAGES_H_

@@ -26,11 +26,11 @@ void UnicastCommunicator::sendMessage(Message &msg) {
 	sendto(data.sockfd, message.c_str(), message.length(), 0, (struct sockaddr *)&data.sendAddr, sizeof(data.sendAddr));
 }
 
-Message *UnicastCommunicator::getMessage(void) {
+std::string UnicastCommunicator::getBlocking(void) {
 	char buffer[4096];
 	socklen_t arg = sizeof(data.receiveAddr);
 	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&data.receiveAddr, &arg);
-	return stringToMessage(buffer);
+	return buffer;
 }
 
 MulticastCommunicator::MulticastCommunicator(std::string multicastGroup, int port) {
@@ -61,11 +61,11 @@ void MulticastCommunicator::sendMessage(Message &msg) {
 	sendto(data.sockfd, message.c_str(), message.length(), 0, (struct sockaddr *)&data.sendAddr, sizeof(data.sendAddr));
 }
 
-Message *MulticastCommunicator::getMessage(void) {
+std::string MulticastCommunicator::getBlocking(void) {
 	char buffer[4096];
 	socklen_t arg = sizeof(data.receiveAddr);
 	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&data.receiveAddr, &arg);
-	return stringToMessage(buffer);
+	return buffer;
 }
 
 
