@@ -17,9 +17,9 @@ UnicastCommunicator::UnicastCommunicator(std::string serverAddr, int port) {
 	data.pfd[0].fd = data.sockfd;
 	data.pfd[0].events = POLLIN;
 
+	int enable = 1;
+	setsockopt(data.sockfd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(enable));
 	bind(data.sockfd, (const struct sockaddr *)&data.receiveAddr, sizeof(data.receiveAddr));
-
-	data.sendAddr = genSockData(serverAddr, port);
 }
 
 UnicastCommunicator::~UnicastCommunicator() {
@@ -28,14 +28,13 @@ UnicastCommunicator::~UnicastCommunicator() {
 
 void UnicastCommunicator::sendMessage(Message &msg) {
 	std::string message = msg.toString();
-	sendto(data.sockfd, message.c_str(), message.length(), 0, (struct sockaddr *)&data.sendAddr, sizeof(data.sendAddr));
+	sendto(data.sockfd, message.c_str(), message.length(), 0, (struct sockaddr *)&data.receiveAddr, sizeof(data.receiveAddr));
 }
 
 std::string UnicastCommunicator::getBlocking(void) {
 	char buffer[4096];
 	memset(buffer, '\0', sizeof(buffer));
-	socklen_t arg = sizeof(data.receiveAddr);
-	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&data.receiveAddr, &arg);
+	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, NULL, 0);
 	return std::string(buffer);
 }
 
@@ -69,8 +68,6 @@ MulticastCommunicator::MulticastCommunicator(std::string multicastGroup, int por
 	mreq.imr_multiaddr.s_addr = inet_addr(multicastGroup.c_str());
 	mreq.imr_interface.s_addr = htonl(INADDR_ANY);
 	setsockopt(data.sockfd, IPPROTO_IP, IP_ADD_MEMBERSHIP, (char *)&mreq, sizeof(mreq));
-
-	data.sendAddr = genSockData(multicastGroup, port);
 }
 
 MulticastCommunicator::~MulticastCommunicator() {
@@ -80,14 +77,13 @@ MulticastCommunicator::~MulticastCommunicator() {
 
 void MulticastCommunicator::sendMessage(Message &msg) {
 	std::string message = msg.toString();
-	sendto(data.sockfd, message.c_str(), message.length(), 0, (struct sockaddr *)&data.sendAddr, sizeof(data.sendAddr));
+	sendto(data.sockfd, message.c_str(), message.length(), 0, (struct sockaddr *)&data.receiveAddr, sizeof(data.receiveAddr));
 }
 
 std::string MulticastCommunicator::getBlocking(void) {
 	char buffer[4096];
 	memset(buffer, '\0', sizeof(buffer));
-	socklen_t arg = sizeof(data.receiveAddr);
-	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&data.receiveAddr, &arg);
+	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, NULL, 0);
 	return std::string(buffer);
 }
 
