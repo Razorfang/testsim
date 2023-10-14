@@ -2,17 +2,16 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QHBoxLayout, QVBoxLayout, QLin
 from PyQt5.QtGui import QIntValidator
 
 class _DurationInput(QWidget):
-    def __init__(self, rangeMin, rangeMax):
+    def __init__(self, lineEdit, rangeMin, rangeMax):
         super().__init__()
 
-        editor = QLineEdit()
-        editor.setValidator(QIntValidator(rangeMin, rangeMax))
+        lineEdit.setValidator(QIntValidator(rangeMin, rangeMax))
 
         desc = QLabel(f"Please enter a test duration between {rangeMin} and {rangeMax} seconds: ")
 
         layout = QHBoxLayout()
         layout.addWidget(desc)
-        layout.addWidget(editor)
+        layout.addWidget(lineEdit)
         self.setLayout(layout)
 
 
@@ -50,9 +49,11 @@ class TestWindow(QWidget):
     def __init__(self, onStartEvent, onStopEvent):
         super().__init__()
 
+        self.durationLineEdit = QLineEdit()
+
         topWidget = QWidget()
         topLayout = QVBoxLayout()
-        topLayout.addWidget(_DurationInput(0, 600))
+        topLayout.addWidget(_DurationInput(self.durationLineEdit, 0, 600))
         topLayout.addWidget(_CriteriaInput())
         topWidget.setLayout(topLayout)
 
@@ -67,3 +68,5 @@ class TestWindow(QWidget):
         fullLayout.addWidget(bottomWidget)
         self.setLayout(fullLayout)
 
+    def getTestDuration(self):
+        return self.durationLineEdit.text()

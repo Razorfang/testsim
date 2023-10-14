@@ -1,17 +1,7 @@
 from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QListWidget, QListWidgetItem
 
 import socket
-import struct
-
-def createMulticastSocket(group, port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_MULTICAST_LOOP, 1)
-    sock.bind((group, port))
-    mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
-    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
-    sock.settimeout(5)
-    return sock
+from socklib.socklib import createMulticastSocket
 
 class DeviceDiscoveryButton(QPushButton):
     def __init__(self):
@@ -27,7 +17,7 @@ class DeviceWindow(QWidget):
         super().__init__()
 
         self.multicastData = (mcastGroup, mcastPort)
-        self.sock = createMulticastSocket(mcastGroup, mcastPort)
+        self.sock = createMulticastSocket(mcastGroup, mcastPort, 5)
 
         self.discoverButton = DeviceDiscoveryButton()
         self.discoverButton.clicked.connect(self.updateDeviceList)
