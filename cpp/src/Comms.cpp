@@ -12,6 +12,11 @@ static struct sockaddr_in genSockData(std::string dst, int port) {
 UnicastCommunicator::UnicastCommunicator(std::string serverAddr, int port) {
 	data.sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	data.receiveAddr = genSockData(serverAddr, port);
+
+	memset(data.pfd, 0, sizeof(data.pfd));
+	data.pfd[0].fd = data.sockfd;
+	data.pfd[0].events = POLLIN;
+
 	bind(data.sockfd, (const struct sockaddr *)&data.receiveAddr, sizeof(data.receiveAddr));
 
 	data.sendAddr = genSockData(serverAddr, port);
@@ -33,9 +38,25 @@ std::string UnicastCommunicator::getBlocking(void) {
 	return buffer;
 }
 
+std::string UnicastCommunicator::pollReceive(void) {
+	if (poll(data.pfd, 1, 0) < 0) {
+		return std::string();
+	}
+
+	if (data.pfd[0].revents & POLLIN) {
+		return getBlocking();
+	}
+
+	return std::string();
+}
+
 MulticastCommunicator::MulticastCommunicator(std::string multicastGroup, int port) {
 	data.sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 	data.receiveAddr = genSockData(multicastGroup, port);
+
+	memset(data.pfd, 0, sizeof(data.pfd));
+	data.pfd[0].fd = data.sockfd;
+	data.pfd[0].events = POLLIN;
 
 	int enable = 1;
 	setsockopt(data.sockfd, IPPROTO_IP, IP_MULTICAST_LOOP, &enable, sizeof(enable));
@@ -68,4 +89,14 @@ std::string MulticastCommunicator::getBlocking(void) {
 	return buffer;
 }
 
+std::string MulticastCommunicator::pollReceive(void) {
+	if (poll(data.pfd, 1, 0) < 0) {
+		return std::string();
+	}
 
+	if (data.pfd[0].revents & POLLIN) {
+		return getBlocking();
+	}
+
+	return std::string();
+}

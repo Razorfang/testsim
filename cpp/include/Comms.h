@@ -6,6 +6,7 @@
 #include <cstring>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <poll.h>
 
 #include "Messages.h"
 
@@ -13,6 +14,7 @@ struct CommData {
 	int sockfd;
 	struct sockaddr_in receiveAddr;
 	struct sockaddr_in sendAddr;
+	struct pollfd pfd[1];
 };
 
 class Communicator {
@@ -21,6 +23,7 @@ class Communicator {
 		struct CommData data;
 	public:
 		virtual std::string getBlocking(void) = 0;
+		virtual std::string pollReceive(void) = 0;
 		virtual void sendMessage(Message &msg) = 0;
 };
 
@@ -30,6 +33,7 @@ class UnicastCommunicator : public Communicator {
 		~UnicastCommunicator();
 
 		std::string getBlocking(void) override;
+		std::string pollReceive(void) override;
 		void sendMessage(Message &msg) override;
 };
 
@@ -39,6 +43,7 @@ class MulticastCommunicator : public Communicator {
 		~MulticastCommunicator();
 
 		std::string getBlocking(void) override;
+		std::string pollReceive(void) override;
 		void sendMessage(Message &msg) override;
 };
 
