@@ -35,17 +35,19 @@ class _CriteriaInput(QWidget):
         self.setLayout(fullLayout)
 
 class _StartButton(QPushButton):
-    def __init__(self):
+    def __init__(self, clickEvent):
         super().__init__("Start")
         self.setToolTip("Start test execution")
+        self.clicked.connect(clickEvent)
 
 class _StopButton(QPushButton):
-    def __init__(self):
+    def __init__(self, clickEvent):
         super().__init__("Stop")
         self.setToolTip("Force test execution to stop")
+        self.clicked.connect(clickEvent)
 
 class TestWindow(QWidget):
-    def __init__(self):
+    def __init__(self, onStartEvent, onStopEvent):
         super().__init__()
 
         topWidget = QWidget()
@@ -56,8 +58,8 @@ class TestWindow(QWidget):
 
         bottomWidget = QWidget()
         bottomLayout = QHBoxLayout()
-        bottomLayout.addWidget(_StartButton())
-        bottomLayout.addWidget(_StopButton())
+        bottomLayout.addWidget(_StartButton(onStartEvent))
+        bottomLayout.addWidget(_StopButton(onStopEvent))
         bottomWidget.setLayout(bottomLayout)
 
         fullLayout = QVBoxLayout()

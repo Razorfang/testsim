@@ -39,6 +39,8 @@ class DeviceWindow(QWidget):
         layout.addWidget(self.deviceList)
         self.setLayout(layout)
 
+    def getSelectedDevice(self):
+        return self.deviceList.currentItem()
 
     def updateDeviceList(self):
         message = "ID;"
