@@ -39,7 +39,7 @@ bool DiscoveryReplyMessage::updateFromString(std::string s) {
 	// Matches the pattern 'ID;MODEL=<anything-but-;>;SERIAL=<anything-but-;>;
 	std::vector<std::string> tokens = split(s, ";");
 	printTokens(tokens);
-	if (4 != tokens.size()) {
+	if (3 != tokens.size()) {
 		return false;
 	}
 
@@ -48,7 +48,6 @@ bool DiscoveryReplyMessage::updateFromString(std::string s) {
 	}
 
 	std::vector<std::string> subTokens = split(tokens[1], "=");
-	printTokens(subTokens);
 	if (2 == subTokens.size()) {
 		model = subTokens[1];		
 	}
@@ -57,7 +56,6 @@ bool DiscoveryReplyMessage::updateFromString(std::string s) {
 	}
 
 	subTokens = split(tokens[2], "=");
-	printTokens(subTokens);
 	if (2 == subTokens.size()) {
 		serial = subTokens[1];
 	}
@@ -80,7 +78,8 @@ std::string TestStartMessage::toString(void) {
 bool TestStartMessage::updateFromString(std::string s) {
 	// Matches the pattern 'TEST;CMD=START;DURATION=<seconds>;RATE=<ms>;'
 	std::vector<std::string> tokens = split(s, ";");
-	if (5 != tokens.size()) {
+	printTokens(tokens);
+	if (4 != tokens.size()) {
 		return false;
 	}
 
@@ -93,7 +92,7 @@ bool TestStartMessage::updateFromString(std::string s) {
 	}
 
 	std::vector<std::string> subTokens = split(tokens[2], "=");
-	if (2 == tokens.size()) {
+	if (2 == subTokens.size()) {
 		durationSeconds = stoi(subTokens[1]);
 	}
 	else {
@@ -102,7 +101,7 @@ bool TestStartMessage::updateFromString(std::string s) {
 
 
 	subTokens = split(tokens[3], "=");
-	if (2 == tokens.size()) {
+	if (2 == subTokens.size()) {
 		rateMilliseconds = stoi(subTokens[1]);
 	}
 	else {

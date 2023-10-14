@@ -12,6 +12,8 @@ void Device::iterate(void) {
 	std::string reply;
 	DiscoveryRequestMessage drq;
 	DiscoveryReplyMessage drm(deviceModel, deviceName);
+	TestStartMessage tst(0, 0);
+	TestStopMessage tsp;
 
 	switch(state) {
 		case UNDISCOVERED:
@@ -26,6 +28,18 @@ void Device::iterate(void) {
 			}
 			break;
 		case IDLE:
+			std::cout << "Waiting to start or stop a test..." << std::endl;
+			reply = unicomm->getBlocking();
+			std::cout << "Message received: " << reply << std::endl;
+			if (tst.updateFromString(reply)) {
+				std::cout << "Start received: " << tst.toString() << std::endl;
+			}
+			else if (tsp.updateFromString(reply)) {
+				std::cout << "Stop received: " << tsp.toString() << std::endl;
+			}
+			else {
+				std::cout << "Unknown message!" << std::endl;
+			}
 			break;
 		case TESTING:
 			break;
