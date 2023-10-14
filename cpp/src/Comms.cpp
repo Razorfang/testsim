@@ -33,9 +33,10 @@ void UnicastCommunicator::sendMessage(Message &msg) {
 
 std::string UnicastCommunicator::getBlocking(void) {
 	char buffer[4096];
+	memset(buffer, '\0', sizeof(buffer));
 	socklen_t arg = sizeof(data.receiveAddr);
 	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&data.receiveAddr, &arg);
-	return buffer;
+	return std::string(buffer);
 }
 
 std::string UnicastCommunicator::pollReceive(void) {
@@ -84,9 +85,10 @@ void MulticastCommunicator::sendMessage(Message &msg) {
 
 std::string MulticastCommunicator::getBlocking(void) {
 	char buffer[4096];
+	memset(buffer, '\0', sizeof(buffer));
 	socklen_t arg = sizeof(data.receiveAddr);
 	recvfrom(data.sockfd, buffer, sizeof(buffer), 0, (struct sockaddr*)&data.receiveAddr, &arg);
-	return buffer;
+	return std::string(buffer);
 }
 
 std::string MulticastCommunicator::pollReceive(void) {

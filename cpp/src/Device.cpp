@@ -11,14 +11,18 @@ Device::Device(std::string name, UnicastCommunicator *ucomm, MulticastCommunicat
 
 void Device::iterate(void) {
 	std::string reply;
-	DiscoveryRequestMessage drm;
+	DiscoveryRequestMessage drq;
+	DiscoveryReplyMessage drm(deviceModel, deviceSerial);
 
 	switch(state) {
 		case UNDISCOVERED:
 			reply = multicomm->getBlocking();
-			if (drm.updateFromString(reply))
+			std::cout << "Message received: " << reply << std::endl;
+			if (drq.updateFromString(reply))
 			{
-				std::cout << "Update received: " << drm.toString() << std::endl;
+				std::cout << "Update received: " << drq.toString() << std::endl;
+				multicomm->sendMessage(drm);
+				std::cout << "Reply sent: " << drm.toString() << std::endl;
 				state = IDLE;
 			}
 			break;

@@ -39,5 +39,7 @@ class DeviceWindow(QWidget):
         self.setLayout(layout)
 
     def updateDeviceList(self):
+        message = "ID;"
+        print(f"Sending message '{message}'")
         self.deviceList.clear()
-        self.sock.sendto("ID;".encode(), self.multicastData)
+        self.sock.sendto(message.encode(), self.multicastData)
