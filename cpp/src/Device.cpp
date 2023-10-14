@@ -2,7 +2,6 @@
 Device::Device(std::string name, UnicastCommunicator *ucomm, MulticastCommunicator *mcomm) {
 	deviceName = name;
 	deviceModel = "TECHNO-TROUSERS";
-	deviceSerial = "W4114C3";
 	state = UNDISCOVERED;
 
 	unicomm = ucomm;
@@ -12,7 +11,7 @@ Device::Device(std::string name, UnicastCommunicator *ucomm, MulticastCommunicat
 void Device::iterate(void) {
 	std::string reply;
 	DiscoveryRequestMessage drq;
-	DiscoveryReplyMessage drm(deviceModel, deviceSerial);
+	DiscoveryReplyMessage drm(deviceModel, deviceName);
 
 	switch(state) {
 		case UNDISCOVERED:

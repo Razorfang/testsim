@@ -10,6 +10,7 @@ def createMulticastSocket(group, port):
     sock.bind((group, port))
     mreq = struct.pack('4sl', socket.inet_aton(group), socket.INADDR_ANY)
     sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+    sock.settimeout(5)
     return sock
 
 class DeviceDiscoveryButton(QPushButton):
@@ -38,8 +39,20 @@ class DeviceWindow(QWidget):
         layout.addWidget(self.deviceList)
         self.setLayout(layout)
 
+
     def updateDeviceList(self):
         message = "ID;"
-        print(f"Sending message '{message}'")
         self.deviceList.clear()
         self.sock.sendto(message.encode(), self.multicastData)
+        while True:
+            try:
+                data = self.sock.recv(4096)
+                if not data:
+                    break
+                data = data.decode('ISO-8859-1')
+                # Covers loopback case
+                if message != data:
+                    self.deviceList.addItem(QListWidgetItem(data))
+            except socket.timeout:
+                print("Timeout occurred")
+                break
