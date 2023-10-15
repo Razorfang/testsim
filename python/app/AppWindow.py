@@ -2,7 +2,7 @@ from PyQt5.QtWidgets import QWidget, QHBoxLayout
 
 from devices.DeviceWindow import DeviceWindow
 from tests.TestWindow import TestWindow
-from socklib.socklib import createUDPClientSocket
+from socklib.socklib import createUDPSocket
 
 class AppWindow(QWidget):
     def __init__(self, mcastGroup, mcastPort):
@@ -23,7 +23,7 @@ class AppWindow(QWidget):
         testDuration = self.testWindow.getTestDuration()
         if testDuration:
             msg = f"TEST;CMD=START;DURATION={testDuration};RATE=100;"
-            unisock = createUDPClientSocket()
+            unisock = createUDPSocket('127.0.0.1', 12345)
             unisock.sendto(msg.encode(), ('127.0.0.1', 12345))
 
     def onStopEvent(self):
