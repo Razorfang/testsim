@@ -13,6 +13,7 @@
 struct CommData {
 	int sockfd;
 	struct sockaddr_in receiveAddr;
+	struct sockaddr_in srcAddr;
 	struct pollfd pfd[1];
 };
 

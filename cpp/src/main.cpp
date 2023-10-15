@@ -13,7 +13,7 @@ int main(int argc, const char **argv) {
 	}
 
 	UserArguments userArgs(argv);
-	UnicastCommunicator unicomm("127.0.0.1", userArgs.devicePort);
+	UnicastCommunicator unicomm("192.168.1.64", userArgs.devicePort);
 	MulticastCommunicator multicomm("224.3.11.15", 31115);
 	Device testDevice(userArgs.deviceName, &unicomm, &multicomm);
 	return testDevice.powerOn();
