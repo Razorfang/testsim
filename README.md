@@ -1,2 +1,2 @@
 # testsim
-For Rocketlab's eyes only
+This is nothing
