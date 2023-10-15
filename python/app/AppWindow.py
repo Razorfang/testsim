@@ -22,9 +22,18 @@ class AppWindow(QWidget):
     def onStartEvent(self):
         testDuration = self.testWindow.getTestDuration()
         if testDuration:
-            msg = f"TEST;CMD=START;DURATION={testDuration};RATE=100;"
-            unisock = createUDPSocket('127.0.0.1', 12345)
-            unisock.sendto(msg.encode(), ('127.0.0.1', 12345))
+            testDeviceData = self.deviceWindow.getSelectedDeviceData()
+            if testDeviceData:
+                msg = f"TEST;CMD=START;DURATION={testDuration};RATE=100;"
+                unisock = createUDPSocket('192.168.1.145', 12345)
+                unisock.sendto(msg.encode(), testDeviceData)
+                print(f"Message sent: {msg}")
+                reply = unisock.recv(4096)
+                print(f"Reply received: {reply}")
+            else:
+                print("Select a device to test!")
+        else:
+            print("Enter a test duration!")
 
     def onStopEvent(self):
         print("Stop clicked")

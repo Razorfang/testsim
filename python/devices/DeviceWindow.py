@@ -23,14 +23,25 @@ class DeviceWindow(QWidget):
         self.discoverButton.clicked.connect(self.updateDeviceList)
 
         self.deviceList = DeviceList()
+        self.deviceData = {}
 
         layout = QVBoxLayout()
         layout.addWidget(self.discoverButton)
         layout.addWidget(self.deviceList)
         self.setLayout(layout)
 
+    def addDevice(serial, ip, port):
+        self.deviceList.addItem(QListWidgetItem(data))
+        self.deviceData[serial] = (ip, port)
+
     def getSelectedDevice(self):
         return self.deviceList.currentItem()
+
+    def getSelectedDeviceData(self):
+        selectedDevice = self.getSelectedDevice()
+        if selectedDevice:
+            return self.deviceData[selectedDevice.text()]
+        return None
 
     def updateDeviceList(self):
         message = "ID;"
@@ -38,13 +49,13 @@ class DeviceWindow(QWidget):
         self.sock.sendto(message.encode(), self.multicastData)
         while True:
             try:
-                data = self.sock.recv(4096)
+                data, sender = self.sock.recvfrom(4096)
                 if not data:
                     break
                 data = data.decode('ISO-8859-1')
                 # Covers loopback case
                 if message != data:
-                    self.deviceList.addItem(QListWidgetItem(data))
+                    self.addDevice(data, sender, 12345)
             except socket.timeout:
                 print("Timeout occurred")
                 break
